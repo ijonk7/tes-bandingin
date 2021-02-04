@@ -28,7 +28,7 @@
                 @csrf
                   <div class="form-group">
                     <label for="email" class="sr-only">{{ __('E-Mail Address') }}</label>
-                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email address" required autocomplete="email" autofocus>
+                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="guest@gmail.com" required autocomplete="email" autofocus>
                     @error('email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -37,7 +37,7 @@
                   </div>
                   <div class="form-group mb-4">
                     <label for="password" class="sr-only">{{ __('Password') }}</label>
-                    <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required autocomplete="current-password" placeholder="***********">
+                    <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" value="guestguest" required autocomplete="current-password">
                     @error('password')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
