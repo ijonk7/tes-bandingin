@@ -28,7 +28,7 @@
                 @csrf
                   <div class="form-group">
                     <label for="email" class="sr-only">{{ __('E-Mail Address') }}</label>
-                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="guest@gmail.com" required autocomplete="email" autofocus>
+                    <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="guest@gmail.com" required autocomplete="email">
                     @error('email')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
