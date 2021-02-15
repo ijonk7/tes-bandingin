@@ -2,7 +2,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Insert Data Employee<div style="font-size: 12px;"><span
+                    <h4 class="modal-title">Insert Data<div style="font-size: 12px;"><span
                                 class="text-red"><strong> * Field wajib diisi</strong></span></div>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -13,53 +13,40 @@
                     <!-- form start -->
                     <form class="form-horizontal" wire:submit.prevent="store" enctype="multipart/form-data">
                         <div class="card-body">
+                            <!-- select -->
                             <div class="form-group row">
-                                <label for="name" class="col-sm-2 col-form-label">Full Name: <span
-                                        class="text-red">*</span></label>
+                                <label for="bookId" class="col-sm-2 col-form-label">Book: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" wire:model="name"
-                                        class="form-control @error('name') is-invalid state-invalid @enderror"
-                                        id="idCreateName" placeholder="Name">
-                                    @error('name')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email" class="col-sm-2 col-form-label">Email: <span
-                                        class="text-red">*</span></label>
-                                <div class="col-sm-10">
-                                    <input type="email" wire:model="email"
-                                        class="form-control @error('email') is-invalid state-invalid @enderror"
-                                        id="idCreateEmail" placeholder="Email">
-                                    @error('email')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="dateOfBirth" class="col-sm-2 col-form-label">Date of birth: <span
-                                        class="text-red">*</span></label>
-                                <div class="col-sm-3">
-                                    <input type="date" wire:model="dateOfBirth"
-                                        class="form-control @error('dateOfBirth') is-invalid state-invalid @enderror"
-                                        id="idCreateDateOfBirth">
-                                    @error('dateOfBirth')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-sm-7">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="address" class="col-sm-2 col-form-label">Address:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" wire:model="address" class="form-control" id="idCreateAddress"
-                                        placeholder="Address">
-                                    @error('address')
+                                    <select class="custom-select" wire:model="bookId">
+                                        <option>--Select--</option>
+                                        <option value="2">Book A</option>
+                                        <option value="19">Book B</option>
+                                        <option value="10">Book C</option>
+                                        <option value="15">Book D</option>
+                                        <option value="26">Book E</option>
+                                        <option value="20">Book F</option>
+                                        <option value="5">Book G</option>
+                                        <option value="13">Book H</option>
+                                        <option value="9">Book I</option>
+                                        <option value="14">Book J</option>
+                                        <option value="25">Book K</option>
+                                        <option value="8">Book L</option>
+                                        <option value="22">Book M</option>
+                                        <option value="4">Book N</option>
+                                        <option value="17">Book O</option>
+                                        <option value="7">Book P</option>
+                                        <option value="12">Book Q</option>
+                                        <option value="18">Book R</option>
+                                        <option value="16">Book S</option>
+                                        <option value="11">Book T</option>
+                                        <option value="3">Book U</option>
+                                        <option value="24">Book V</option>
+                                        <option value="6">Book W</option>
+                                        <option value="21">Book X</option>
+                                        <option value="23">Book Y</option>
+                                        <option value="1">Book Z</option>
+                                    </select>
+                                    @error('bookId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror
@@ -67,48 +54,18 @@
                             </div>
                             <!-- select -->
                             <div class="form-group row">
-                                <label for="department" class="col-sm-2 col-form-label">Department: </label>
+                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
-                                    <select class="custom-select" id="idCreateDepartment" wire:model="department">
+                                    <select class="custom-select" wire:model="libraryId">
                                         <option>--Select--</option>
-                                        <option value="Finance and Accounting">Finance and Accounting</option>
-                                        <option value="Human Resources Development">Human Resources Development</option>
-                                        <option value="Information Technology">Information Technology</option>
-                                        <option value="Production">Production</option>
-                                        <option value="Quality Assurance">Quality Assurance</option>
+                                        <option value="1">Library A</option>
+                                        <option value="2">Library B</option>
+                                        <option value="3">Library C</option>
                                     </select>
-                                    @error('department')
+                                    @error('libraryId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-label">Photo:</label>
-                                <div class="col-sm-10">
-                                    @if($tempUrl)
-                                        @if($errors->first('photo'))
-                                            <div class="mb-2"></div>
-                                        @else
-                                            <div class="mb-2">
-                                                <img src="{{ $tempUrl }}" width="100" height="100">
-                                            </div>
-                                        @endif
-                                    @endif
-                                    <input type="file" wire:model="photo"
-                                        class="form-control @error('photo') is-invalid state-invalid @enderror">
-                                    @error('photo')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                    <div class="progress" style="margin-top: 5px;">
-                                        <div wire:loading wire:target="photo"
-                                            class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                                            role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 100%">
-                                            <span style="line-height: 20px; font-size: 14px;">Uploading...</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">

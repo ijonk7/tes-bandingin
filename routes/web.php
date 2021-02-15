@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Models\Book;
+use App\Models\BookLibrary;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,15 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes([
-    'login'    => true,
-    'logout'   => true,
-    'register' => false,
-    'reset'    => false,   // for resetting passwords
-    'confirm'  => false,  // for additional password confirmations
-    'verify'   => false,  // for email verification
-]);
+Auth::routes();
 
 Route::get('/', [LoginController::class, 'showLoginForm']);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+Route::get('/display', [App\Http\Controllers\HomeController::class, 'display'])->name('display');

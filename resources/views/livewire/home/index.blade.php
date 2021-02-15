@@ -3,33 +3,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col">
-                                <select wire:model="paginate" class="form-control form-control-md w-auto">
-                                    <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="50">50</option>
-                                    <option value="100">100</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <input wire:model="search" type="text" class="form-control form-control-md" placeholder="Search by name">
-                            </div>
-                        </div>
-                    </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
                         <table class="table table-hover text-nowrap">
                             <thead class="thead-dark">
                                 <tr>
                                     <th>No</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Date of birth</th>
-                                    <th>Address</th>
-                                    <th>Department</th>
-                                    <th>Photo</th>
+                                    <th>Book</th>
+                                    <th>Library</th>
                                     <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
@@ -37,24 +18,22 @@
                                 @php
                                     $no = 0;
                                 @endphp
-                                @foreach($employee as $data)
+                                @foreach($books->flatMap->libraries as $data)
                                     @php
                                         $no++;
                                     @endphp
                                     <tr>
                                         <td>{{ $no }}</td>
+                                        @foreach ($books as $item)
+                                            @if ($data->pivot->book_id == $item->id)
+                                                <td>{{ $item->name }}</td>
+                                            @endif
+                                        @endforeach
                                         <td>{{ $data->name }}</td>
-                                        <td>{{ $data->email }}</td>
-                                        <td>{{ date("d F Y", strtotime($data->dateOfBirth)) }}
-                                        </td>
-                                        <td>{{ $data->address }}</td>
-                                        <td>{{ $data->department }}</td>
-                                        <td><img src="{{ $data->photo !== null ? asset('storage/' . $data->photo) : asset('storage/image/employee/no-image-available.png') }}"
-                                                width="100" height="100"></td>
                                         <td>
                                             <div class="btn-list" style="display: flex; justify-content: center; align-items: center;">
-                                                <button type="button" wire:click="getEmployee({{ $data->id }})" class="btn btn-warning mr-2" data-toggle="modal" data-target="#editModal"><i class="far fa-edit"></i> Edit</button>
-                                                <button type="button" onclick="deleteModal({{ $data->id }})" class="btn btn-danger mr-2"><i class="far fa-trash-alt"></i> Delete</button>
+                                                <button type="button" wire:click="getBook([{{ $data->pivot->id}},{{ $data->pivot->book_id }}])" class="btn btn-warning mr-2" data-toggle="modal" data-target="#editModal"><i class="far fa-edit"></i> Edit</button>
+                                                <button type="button" onclick="deleteModal({{ $data->pivot->id }})" class="btn btn-danger mr-2"><i class="far fa-trash-alt"></i> Delete</button>
                                             </div>
                                         </td>
                                     </tr>
@@ -63,14 +42,6 @@
                         </table>
 
                         <br>
-
-                        {{ $employee->links() }}
-
-                        @if($totalData)
-                            <div>Showing 1 to {{ $employee->count() }} of {{ $totalData }} entries</div>
-                        @else
-                            <div>Showing 0 to {{ $employee->count() }} of {{ $totalData }} entries</div>
-                        @endif
 
                         <br>
                     </div>
@@ -86,7 +57,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Data Employee<div style="font-size: 12px;"><span
+                    <h4 class="modal-title">Edit Data<div style="font-size: 12px;"><span
                                 class="text-red"><strong> * Field wajib diisi</strong></span></div>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -95,56 +66,42 @@
                 </div>
                 <div class="modal-body">
                     <!-- form start -->
-                    <form class="form-horizontal" wire:submit.prevent="update" enctype="multipart/form-data">
-                        <input type="hidden" wire:model="employeeId">
+                    <form class="form-horizontal" wire:submit.prevent="update">
+                        <input type="hidden" wire:model="bookLibraryId">
                         <div class="card-body">
+                            <!-- select -->
                             <div class="form-group row">
-                                <label for="name" class="col-sm-2 col-form-label">Full Name: <span
-                                        class="text-red">*</span></label>
+                                <label for="bookId" class="col-sm-2 col-form-label">Book: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
-                                    <input type="text" wire:model="name"
-                                        class="form-control @error('name') is-invalid state-invalid @enderror"
-                                        id="idEditName" placeholder="Name">
-                                    @error('name')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email" class="col-sm-2 col-form-label">Email: <span
-                                        class="text-red">*</span></label>
-                                <div class="col-sm-10">
-                                    <input type="email" wire:model="email"
-                                        class="form-control @error('email') is-invalid state-invalid @enderror"
-                                        id="idEditEmail" placeholder="Email">
-                                    @error('email')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="dateOfBirth" class="col-sm-2 col-form-label">Date of birth: <span
-                                        class="text-red">*</span></label>
-                                <div class="col-sm-3">
-                                    <input type="date" wire:model="dateOfBirth"
-                                        class="form-control @error('dateOfBirth') is-invalid state-invalid @enderror"
-                                        id="idEditDateOfBirth">
-                                    @error('dateOfBirth')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                                <div class="col-sm-7">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="address" class="col-sm-2 col-form-label">Address:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" wire:model="address" class="form-control" id="idEditAddress"
-                                        placeholder="Address">
-                                    @error('address')
+                                    <select class="custom-select" wire:model="bookId">
+                                        <option value="2">Book A</option>
+                                        <option value="19">Book B</option>
+                                        <option value="10">Book C</option>
+                                        <option value="15">Book D</option>
+                                        <option value="26">Book E</option>
+                                        <option value="20">Book F</option>
+                                        <option value="5">Book G</option>
+                                        <option value="13">Book H</option>
+                                        <option value="9">Book I</option>
+                                        <option value="14">Book J</option>
+                                        <option value="25">Book K</option>
+                                        <option value="8">Book L</option>
+                                        <option value="22">Book M</option>
+                                        <option value="4">Book N</option>
+                                        <option value="17">Book O</option>
+                                        <option value="7">Book P</option>
+                                        <option value="12">Book Q</option>
+                                        <option value="18">Book R</option>
+                                        <option value="16">Book S</option>
+                                        <option value="11">Book T</option>
+                                        <option value="3">Book U</option>
+                                        <option value="24">Book V</option>
+                                        <option value="6">Book W</option>
+                                        <option value="21">Book X</option>
+                                        <option value="23">Book Y</option>
+                                        <option value="1">Book Z</option>
+                                    </select>
+                                    @error('bookId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror
@@ -152,53 +109,17 @@
                             </div>
                             <!-- select -->
                             <div class="form-group row">
-                                <label for="department" class="col-sm-2 col-form-label">Department: </label>
+                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
-                                    <select class="custom-select" id="idEditDepartment" wire:model="department">
-                                        <option>--Select--</option>
-                                        <option value="Finance and Accounting">Finance and Accounting</option>
-                                        <option value="Human Resources Development">Human Resources Development</option>
-                                        <option value="Information Technology">Information Technology</option>
-                                        <option value="Production">Production</option>
-                                        <option value="Quality Assurance">Quality Assurance</option>
+                                    <select class="custom-select" wire:model="libraryId">
+                                        <option value="1">Library A</option>
+                                        <option value="2">Library B</option>
+                                        <option value="3">Library C</option>
                                     </select>
-                                    @error('department')
+                                    @error('libraryId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-2 form-label">Photo:</label>
-                                <div class="col-sm-10">
-                                    @if($tempUrl)
-                                        @if($errors->first('photo'))
-                                            <div class="mb-2"></div>
-                                        @else
-                                            <div class="mb-2">
-                                                <img src="{{ $tempUrl }}" width="100" height="100">
-                                            </div>
-                                        @endif
-                                    @elseif($photo)
-                                        <div class="mb-2">
-                                            <img src="{{ asset('storage/'.$photo) }}" width="100"
-                                                height="100">
-                                        </div>
-                                    @endif
-                                    <input type="file" wire:model="photo"
-                                        class="form-control @error('photo') is-invalid state-invalid @enderror">
-                                    @error('photo')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                    <div class="progress" style="margin-top: 5px;">
-                                        <div wire:loading wire:target="photo"
-                                            class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                                            role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
-                                            style="width: 100%">
-                                            <span style="line-height: 20px; font-size: 14px;">Uploading...</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -259,7 +180,7 @@
             )
         });
 
-        function deleteModal(employeeId) {
+        function deleteModal(bookLibraryId) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -270,7 +191,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.emit('deleteEmployee', employeeId)
+                    Livewire.emit('deleteBookLibrary', bookLibraryId)
                 }
             })
         }

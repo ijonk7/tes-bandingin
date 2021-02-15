@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('content')
 <!-- Content Wrapper. Contains page content -->
@@ -13,7 +13,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <button type="button" class="btn btn-default bg-gradient-primary" data-toggle="modal" data-target="#createModal">
-                            Insert Data Employee
+                            Insert Data
                         </button>
                     </ol>
                 </div><!-- /.col -->

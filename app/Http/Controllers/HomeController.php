@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
+use App\Models\BookLibrary;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -24,5 +26,14 @@ class HomeController extends Controller
     public function index()
     {
         return view('home');
+    }
+
+    public function display()
+    {
+        $bookLibrary = BookLibrary::with('book')->orderBy('library_id', 'asc')->get();
+
+        return view('display', [
+            'bookLibrary' => $bookLibrary
+        ]);
     }
 }

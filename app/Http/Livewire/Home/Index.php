@@ -2,139 +2,70 @@
 
 namespace App\Http\Livewire\Home;
 
-use App\Models\Employee;
+use App\Models\Book;
+use App\Models\BookLibrary;
+use App\Models\Library;
 use Livewire\Component;
-use Livewire\WithFileUploads;
-use Livewire\WithPagination;
 
 class Index extends Component
 {
-    use WithPagination;
-    use WithFileUploads;
-
-    public $employeeId;
-    public $name;
-    public $email;
-    public $dateOfBirth;
-    public $address;
-    public $department;
-    public $photo;
-    public $tempUrl;
-    public $paginate = 10;
-    public $search;
-    public $totalData;
-    protected $paginationTheme = 'bootstrap';
-    protected $queryString = ['search'];
+    public $bookLibraryId;
+    public $bookId;
+    public $libraryId;
 
     protected $listeners = [
         'refreshTable' => '$refresh',
-        'deleteEmployee',
+        'deleteBookLibrary',
     ];
-
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPaginate()
-    {
-        $this->resetPage();
-    }
-
-    public function updatedPhoto()
-    {
-        $this->validate([
-            'photo' => 'nullable|sometimes|image',
-        ]);
-
-        try {
-            $this->tempUrl = $this->photo->temporaryUrl();
-        } catch (\Exception $e) {
-            $this->tempUrl = null; // placeholder photo
-        }
-    }
 
     public function render()
     {
-        // $query = Employee::latest();
-        // $this->totalData = $query->count();
-        // return view('livewire.home.index', [
-        //     'employee' => $query->paginate($this->paginate)
-        // ]);
+        $books = Book::with('libraries')->orderBy('created_at', 'desc')->get();
+        $library = Library::all();
 
-        if ($this->search) {
-            $query = Employee::latest()->where('name', 'like', '%' . $this->search . '%');
-            $this->totalData = $query->count();
-            return view('livewire.home.index', [
-                'employee' => $query->paginate($this->paginate)
-            ]);
-        } else {
-            $query = Employee::latest();
-            $this->totalData = $query->count();
-            return view('livewire.home.index', [
-                'employee' => $query->paginate($this->paginate)
-            ]);
-        }
+        return view('livewire.home.index', [
+            'books' => $books,
+            'library' => $library
+        ]);
     }
 
-    public function getEmployee($id)
+    public function getBook($id)
     {
-        $this->reset(['tempUrl']);
-        $employee = Employee::find($id);
-        $this->employeeId = $employee->id;
-        $this->name = $employee->name;
-        $this->email = $employee->email;
-        $this->dateOfBirth = $employee->dateOfBirth;
-        $this->address = $employee->address;
-        $this->department = $employee->department;
-        $this->photo = $employee->photo;
+        $book = Book::where('id', $id[1])->with('libraries')->first();
+        $this->bookLibraryId = $id[0];
+        $this->bookId = $book->id;
+        $this->libraryId = $book->libraries[0]->id;
     }
 
     public function update()
     {
-        if ($this->employeeId) {
-            $employee = Employee::find($this->employeeId);
+        if ($this->bookLibraryId) {
+            $bookLibrary = BookLibrary::find($this->bookLibraryId);
 
-            if ($this->photo == $employee->photo) {
-                $this->validate([
-                    'name' => 'required',
-                    'email' => 'required|email',
-                    'dateOfBirth' => 'required|date',
-                    'address' => 'nullable'
-                ]);
-            } else {
-                $this->validate([
-                    'name' => 'required',
-                    'email' => 'required|email',
-                    'dateOfBirth' => 'required|date',
-                    'address' => 'nullable',
-                    'department' => 'nullable|in:Finance and Accounting,Human Resources Development,Information Technology,Production,Quality Assurance',
-                    'photo' => 'nullable|sometimes|image'
-                ]);
-            }
+            $this->validate([
+                'bookId' => 'required',
+                'libraryId' => 'required'
+            ]);
 
-            $result = $employee->update([
-                        'name' => $this->name,
-                        'email' => $this->email,
-                        'dateOfBirth' => $this->dateOfBirth,
-                        'address' => $this->address,
-                        'department' => $this->department,
-                        'photo' => $this->photo == $employee->photo ? $this->photo : $this->photo->store('image/employee', 'public')
+            $result = $bookLibrary->update([
+                        'book_id' => $this->bookId,
+                        'library_id' => $this->libraryId
                     ]);
         }
 
         if ($result) {
-            $this->reset(['employeeId', 'name', 'email', 'dateOfBirth', 'address', 'department', 'photo', 'tempUrl']);
+            $this->reset(['bookLibraryId', 'bookId', 'libraryId']);
             $this->emit('closeEditModalSuccess'); // Close model to using to jquery when Success
         } else {
             $this->emit('closeEditModalFailed'); // Close model to using to jquery when Failed
         }
     }
 
-    public function deleteEmployee($id)
+    public function deleteBookLibrary($id)
     {
         if ($id) {
-            $result = Employee::destroy($id);
+            $bookLibrary = BookLibrary::find($id);
+            $result = BookLibrary::destroy($bookLibrary->id);
 
             if ($result) {
                 $this->emit('displayAlertDeleteSuccess');
