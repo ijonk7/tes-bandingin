@@ -20,11 +20,17 @@ class Index extends Component
 
     public function render()
     {
-        $books = Book::with('libraries')->orderBy('created_at', 'desc')->get();
+        $books2 = Book::with('libraries')->get();
+
+        $books = $books2->flatMap->libraries->sortByDesc(function ($book, $key) {
+            return $book->getOriginal('pivot_created_at');
+        });
+
         $library = Library::all();
 
         return view('livewire.home.index', [
             'books' => $books,
+            'books2' => $books2,
             'library' => $library
         ]);
     }

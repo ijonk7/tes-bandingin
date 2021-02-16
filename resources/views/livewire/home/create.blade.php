@@ -15,6 +15,22 @@
                         <div class="card-body">
                             <!-- select -->
                             <div class="form-group row">
+                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
+                                <div class="col-sm-10">
+                                    <select class="custom-select" wire:model="libraryId">
+                                        <option>--Select--</option>
+                                        <option value="1">Library A</option>
+                                        <option value="2">Library B</option>
+                                        <option value="3">Library C</option>
+                                    </select>
+                                    @error('libraryId')
+                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group row">
                                 <label for="bookId" class="col-sm-2 col-form-label">Book: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="custom-select" wire:model="bookId">
@@ -47,22 +63,6 @@
                                         <option value="1">Book Z</option>
                                     </select>
                                     @error('bookId')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- select -->
-                            <div class="form-group row">
-                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
-                                <div class="col-sm-10">
-                                    <select class="custom-select" wire:model="libraryId">
-                                        <option>--Select--</option>
-                                        <option value="1">Library A</option>
-                                        <option value="2">Library B</option>
-                                        <option value="3">Library C</option>
-                                    </select>
-                                    @error('libraryId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror

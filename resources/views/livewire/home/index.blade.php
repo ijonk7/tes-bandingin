@@ -9,8 +9,8 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th>No</th>
-                                    <th>Book</th>
                                     <th>Library</th>
+                                    <th>Book</th>
                                     <th style="text-align: center;">Action</th>
                                 </tr>
                             </thead>
@@ -18,18 +18,18 @@
                                 @php
                                     $no = 0;
                                 @endphp
-                                @foreach($books->flatMap->libraries as $data)
+                                @foreach($books as $data)
                                     @php
                                         $no++;
                                     @endphp
                                     <tr>
                                         <td>{{ $no }}</td>
-                                        @foreach ($books as $item)
+                                        <td>{{ $data->name }}</td>
+                                        @foreach ($books2 as $item)
                                             @if ($data->pivot->book_id == $item->id)
                                                 <td>{{ $item->name }}</td>
                                             @endif
                                         @endforeach
-                                        <td>{{ $data->name }}</td>
                                         <td>
                                             <div class="btn-list" style="display: flex; justify-content: center; align-items: center;">
                                                 <button type="button" wire:click="getBook([{{ $data->pivot->id}},{{ $data->pivot->book_id }}])" class="btn btn-warning mr-2" data-toggle="modal" data-target="#editModal"><i class="far fa-edit"></i> Edit</button>
@@ -71,6 +71,21 @@
                         <div class="card-body">
                             <!-- select -->
                             <div class="form-group row">
+                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
+                                <div class="col-sm-10">
+                                    <select class="custom-select" wire:model="libraryId">
+                                        <option value="1">Library A</option>
+                                        <option value="2">Library B</option>
+                                        <option value="3">Library C</option>
+                                    </select>
+                                    @error('libraryId')
+                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- select -->
+                            <div class="form-group row">
                                 <label for="bookId" class="col-sm-2 col-form-label">Book: <span class="text-red">*</span></label>
                                 <div class="col-sm-10">
                                     <select class="custom-select" wire:model="bookId">
@@ -102,21 +117,6 @@
                                         <option value="1">Book Z</option>
                                     </select>
                                     @error('bookId')
-                                        <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <!-- select -->
-                            <div class="form-group row">
-                                <label for="libraryId" class="col-sm-2 col-form-label">Library: <span class="text-red">*</span></label>
-                                <div class="col-sm-10">
-                                    <select class="custom-select" wire:model="libraryId">
-                                        <option value="1">Library A</option>
-                                        <option value="2">Library B</option>
-                                        <option value="3">Library C</option>
-                                    </select>
-                                    @error('libraryId')
                                         <div class="bg-danger-transparent-2 text-danger" role="alert">{{ $message }}
                                         </div>
                                     @enderror
